@@ -1,0 +1,27 @@
+{
+    "timestamp": "2025-07-11T10:15:00Z",
+    "level": "Information",
+    "requestId": "d4f1fabc-1234-4cd3-a456-ef7890fabcde",
+    "traceId": "abc-trace-xyz",
+    "userId": "light2025",
+    "ip": "192.168.1.55",
+    "method": "POST",
+    "path": "/api/orders",
+    "query": "?includeDetails=true",
+    "requestHeaders": {
+    "User-Agent": "Mozilla/5.0",
+    "Authorization": "Bearer"
+    },
+    "requestBody": {
+    "productId": 123,
+    "amount": 5
+    },
+    "responseStatus": 200,
+    "responseBody": {
+    "orderId": 999,
+    "message": "Success"
+    },
+    "elapsedMs": 132,
+    "cpuMs": 140,
+    "memUsedMb": 0
+}

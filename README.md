@@ -1,2 +1,2 @@
-# demo-app-deploy
-demo app deploy
+# train-c-sharp
+Train .NET C#

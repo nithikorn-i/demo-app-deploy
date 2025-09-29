@@ -1,0 +1,13 @@
+<!-- src/app/api-job/api-job.component.html -->
+
+<div class="job-control">
+  <label>
+    ยิง API ทุก:
+    <input type="number" [(ngModel)]="intervalMinutes" min="1" /> วินาที
+  </label>
+
+  <button (click)="startJob()" [disabled]="isRunning">เริ่ม Job</button>
+  <button (click)="stopJob()" [disabled]="!isRunning">หยุด Job</button>
+
+  <p><strong>{{ resultValue }}</strong></p>
+</div>
