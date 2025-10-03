@@ -29,18 +29,22 @@ pipeline {
                                 passwordVariable: 'DOCKER_CRED_PSW'
                             )]) {
                                 // Login Docker Hub
-                                sh 'echo $DOCKER_CRED_PSW | docker login -u $DOCKER_CRED_USR --password-stdin $REGISTRY'
+                                sh """
+                                    echo \$DOCKER_CRED_PSW | docker login -u \$DOCKER_CRED_USR --password-stdin \$REGISTRY
+                                """
 
-                                // Build Docker image พร้อมส่ง ARG ANGULAR_ENV
+                                // Build Docker image
                                 sh """
                                     docker build \
                                         --build-arg ANGULAR_ENV=${params.ENV} \
-                                        -t $REGISTRY/$IMAGE_NAME:${params.ENV}-${BUILD_NUMBER} \
+                                        -t \$REGISTRY/\$IMAGE_NAME:${params.ENV}-\$BUILD_NUMBER \
                                         .
                                 """
 
                                 // Push Docker image
-                                sh 'docker push $REGISTRY/$IMAGE_NAME:${params.ENV}-${BUILD_NUMBER}'
+                                sh """
+                                    docker push \$REGISTRY/\$IMAGE_NAME:${params.ENV}-\$BUILD_NUMBER
+                                """
                             }
                         }
                     }
