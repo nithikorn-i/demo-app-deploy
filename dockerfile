@@ -7,10 +7,14 @@ ENV ANGULAR_ENV=${ANGULAR_ENV}
 
 WORKDIR /src/Web/web-ui
 
+# COPY package.json ก่อนเพื่อติดตั้ง dependencies
 COPY Web/web-ui/package*.json ./
 RUN npm install
 
+# COPY โค้ดทั้งหมด
 COPY Web/web-ui/ ./
+
+# Build ตาม environment
 RUN if [ "$ANGULAR_ENV" = "dev" ]; then npm run build:dev; \
     elif [ "$ANGULAR_ENV" = "ss" ]; then npm run build:ss; \
     elif [ "$ANGULAR_ENV" = "prod" ]; then npm run build:prod; \
