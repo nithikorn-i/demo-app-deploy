@@ -5,12 +5,12 @@ FROM node:16.20.2-alpine AS client-build
 ARG ANGULAR_ENV=dev
 ENV ANGULAR_ENV=${ANGULAR_ENV}
 
-WORKDIR /src/Web/WebUI
+WORKDIR /src/Web/web-ui
 
-COPY Web/WebUI/package*.json ./
+COPY Web/web-ui/package*.json ./
 RUN npm install
 
-COPY Web/WebUI/ ./
+COPY Web/web-ui/ ./
 RUN if [ "$ANGULAR_ENV" = "dev" ]; then npm run build:dev; \
     elif [ "$ANGULAR_ENV" = "ss" ]; then npm run build:ss; \
     elif [ "$ANGULAR_ENV" = "prod" ]; then npm run build:prod; \
@@ -40,7 +40,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
 COPY --from=dotnet-build /app/publish ./
-COPY --from=client-build /src/Web/WebUI/dist/web-ui ./wwwroot
+COPY --from=client-build /src/Web/web-ui/dist/web-ui ./wwwroot
 
 EXPOSE 80
 
