@@ -35,9 +35,6 @@ COPY Infrastructure/Persistence/*.csproj Infrastructure/Persistence/
 RUN dotnet restore
 COPY . .
 
-WORKDIR /src/Web
-RUN dotnet publish -c Release -o /app/publish
-
 # ----------- Stage 3: Combine & Runtime ---------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
