@@ -1,26 +1,4 @@
-# ------------------------ Stage 1: Build Angular ------------------------
-FROM node:16.20.2-alpine AS client-build
-
-# เลือกว่าจะ build dev / ss / prod (default=dev)
-ARG ANGULAR_ENV=dev
-ENV ANGULAR_ENV=${ANGULAR_ENV}
-
-WORKDIR /src/Web/web-ui
-
-# COPY package.json ก่อนเพื่อติดตั้ง dependencies
-COPY Web/web-ui/package*.json ./
-RUN npm install
-
-# COPY โค้ดทั้งหมด
-COPY Web/web-ui/ ./
-
-# Build ตาม environment
-RUN if [ "$ANGULAR_ENV" = "dev" ]; then npm run build:dev; \
-    elif [ "$ANGULAR_ENV" = "ss" ]; then npm run build:ss; \
-    elif [ "$ANGULAR_ENV" = "prod" ]; then npm run build:prod; \
-    else npm run build; fi
-
-# -------------------- Stage 2: Restore & Publish .NET ------------------
+# -------------------- Stage 1: Restore & Publish .NET --------------------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-build
 
 WORKDIR /src
@@ -35,19 +13,37 @@ COPY Infrastructure/Persistence/*.csproj Infrastructure/Persistence/
 RUN dotnet restore
 COPY . .
 
-# ----------- Stage 3: Combine & Runtime ---------
+# Build & Publish .NET app
+WORKDIR /src/Web
+RUN dotnet publish -c Release -o /app/publish
+
+# -------------------- Stage 2: Build Angular --------------------
+FROM node:20 AS client-build
+
+WORKDIR /src/Web/web-ui
+COPY Web/web-ui/package*.json ./
+RUN npm install
+COPY Web/web-ui/ .
+ARG ANGULAR_ENV=dev
+RUN npm run build -- --configuration=$ANGULAR_ENV
+
+# -------------------- Stage 3: Runtime --------------------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
 WORKDIR /app
 
+# Copy published .NET app
 COPY --from=dotnet-build /app/publish ./
+
+# Copy Angular build output to wwwroot
 COPY --from=client-build /src/Web/web-ui/dist/web-ui ./wwwroot
 
 EXPOSE 80
 
-# ใช้ Angular ARG เพื่อตั้งค่า ASP.NET Core environment
+# Set environment
 ARG ANGULAR_ENV=dev
 ENV ASPNETCORE_ENVIRONMENT=${ANGULAR_ENV}
 ENV ASPNETCORE_URLS=http://+:80
 
+# Run .NET app in foreground
 ENTRYPOINT ["dotnet", "Web.dll"]
