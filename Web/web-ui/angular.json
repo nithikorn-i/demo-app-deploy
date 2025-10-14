@@ -56,7 +56,7 @@
               ],
               "outputHashing": "all"
             },
-            "development": {
+            "dev": {
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
@@ -73,7 +73,7 @@
             "production": {
               "browserTarget": "web-ui:build:production"
             },
-            "development": {
+            "dev": {
               "browserTarget": "web-ui:build:development"
             }
           },
