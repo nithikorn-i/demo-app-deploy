@@ -13,7 +13,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { UserListComponent } from './modules/su/user001/user-list/user-list.component';
 import { UserFormComponent } from './modules/su/user001/user-form/user-form.component';
-import { ApiJobComponent } from './modules/MockLogApi/api-job/api-job.component';
 
 registerLocaleData(en);
 
@@ -21,8 +20,7 @@ registerLocaleData(en);
   declarations: [
     AppComponent,
     UserListComponent,
-    UserFormComponent,
-    ApiJobComponent
+    UserFormComponent
   ],
   imports: [
     BrowserModule,

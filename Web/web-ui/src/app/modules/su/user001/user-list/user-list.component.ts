@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
+import { PagedResult } from 'src/app/modules/shared/models/paged-result.model';
 
 @Component({
   selector: 'app-user-list',
@@ -9,38 +10,57 @@ import { User } from '../../models/user.model';
 })
 export class UserListComponent {
 
-  users: User[] = [];
-  total: number = 0;
-  page = 1;
-  pageSize = 10;
-  pageRecord = 10;
+  public users: User[] = [];
+  public total: number = 0;
+  public page = 1;
+  public pageSize = 10;
+  public isSaveMode = false;
+  public index!: number;
 
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService
+  ) {
   }
 
-  ngOnInit(): void {
-    this.load(this.page);
+  public ngOnInit(): void {
+    this.load();
   }
 
-  load(page: number = 1): void {
-    console.log(page);
-    if (page >= this.page) {
-      this.page = page;
-      this.pageSize = page * this.pageRecord;
-      this.userService.getUsers(this.page, this.pageSize).subscribe(result => {
-        this.users = result.result;
-        this.total = result.totalCount;
-        this.page = result.page;
-        this.pageSize = result.pageSize;
-      });
-    }
+  public load(page: number = 1): void {
+    this.userService.getUsers(page, this.pageSize).subscribe((result: PagedResult<User[]>) => {
+      const user = result
+      this.users = user.result;
+      this.total = user.totalCount;
+    });
   }
 
-  edit(user: User) {
+
+  public addUser() {
+    // route ไปหน้าแก้ไข
+    this.users.push({
+      id: '',
+      fullname: '',
+      email: '',
+      saveMode: true
+    });
+    this.index = this.users.length - 1;
+  }
+
+  public edit(user: User) {
     // route ไปหน้าแก้ไข
   }
 
-  delete(id: string) {
+  public delete(id: string) {
     // this.userService.deleteUser(id).subscribe(() => this.load(this.page));
+  }
+
+  public save(user: any) {
+    this.userService.createUser(user.fullname, user.email).subscribe((result: any) => {
+      this.users[this.index].saveMode = !this.users[this.index].saveMode
+    });
+  }
+
+  public cancel(user: User) {
+    console.log(user);
   }
 }

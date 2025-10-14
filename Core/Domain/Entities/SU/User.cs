@@ -1,8 +1,8 @@
 using System;
 
-namespace Application.Models.SU;
+namespace Domain.Entities.SU;
 
-public class UserDto
+public class User
 {
   public Guid Id { get; set; }
   public string Fullname { get; set; } = string.Empty;

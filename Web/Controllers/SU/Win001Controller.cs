@@ -1,4 +1,4 @@
-using Application.Features.SU.User001;
+using Application.Features.SU.Win001;
 using Application.Models.SU;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ namespace Web.Controllers.SU
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class User001Controller(Lists lists) : ControllerBase
+    public class Win001Controller(Lists lists) : ControllerBase
     {
         private readonly Lists _lists = lists;
 
@@ -22,17 +22,16 @@ namespace Web.Controllers.SU
         [HttpGet("getUser")]
         public async Task<ActionResult> GetUserById([FromQuery] Guid id)
         {
-            var user = await _lists.GetUserById(id);
-            return Ok(user);
+            var win = await _lists.GetUserById(id);
+            return Ok(win);
         }
 
         [HttpPost("CreateUser")]
-        public async Task<ActionResult> CreateUser([FromQuery] UserDto user)
+        public async Task<ActionResult> CreateUser([FromBody] WinDto win)
         {
-            var data = await _lists.CreateUser(user);
+            var data = await _lists.CreateUser(win);
             return Ok(data);
         }
-
         
         [HttpPut("Update")]
         public async Task<ActionResult> UpdateUser([FromQuery] Guid id,[FromQuery] String fullname,[FromQuery] string email )

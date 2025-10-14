@@ -1,45 +1,37 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { PagedResult } from '../../shared/models/paged-result.model';
-
-import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private apiUrl: string;
+  private currentPort = window.location.port;
 
-  constructor(private http: HttpClient) {
-    this.apiUrl = environment.apiUrl;
+  // private api = 'http://localhost:5062/api/Win001';
+  private api = `http://localhost:${this.currentPort}/api/Win001`
+
+  constructor(private http: HttpClient) { }
+
+  public getUsers(page = 1, pageSize = 10): Observable<PagedResult<User[]>> {
+    return this.http.get<PagedResult<User[]>>(
+      `${this.api}/getAllUser?Page=${page}&PageSize=${pageSize}`
+    );
   }
 
-  getUsers(page = 1, pageSize = 10): Observable<PagedResult<User[]>> {
+  public createUser(fullname: string, email: string): Observable<any> {
+    const body = {
+      Fullname: fullname,
+      Email: email
+    };
 
-    const params = new HttpParams()
-      .set('page', page)
-      .set('pageSize', pageSize);
-
-    return this.http.get<PagedResult<User[]>>(`${this.apiUrl}/GetAllUsers`, { params });
-  }
-
-  getUser(id: string): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
-  }
-
-  createUser(user: User): Observable<User> {
-    return this.http.post<User>(this.apiUrl, user);
-  }
-
-  updateUser(id: string, user: User): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, user);
-  }
-
-  deleteUser(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.post<any>(
+      `${this.api}/CreateUser`,
+      body
+    );
   }
 
 }

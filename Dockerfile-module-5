@@ -60,3 +60,5 @@ ENV HTTP_PORTS=
 ENV ASPNETCORE_ENVIRONMENT=Development
 
 ENTRYPOINT ["dotnet", "Web.dll"]
+    
+     
