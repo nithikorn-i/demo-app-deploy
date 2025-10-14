@@ -57,6 +57,6 @@ EXPOSE 80
 ENV ASPNETCORE_URLS=http://+:80
 ENV HTTP_PORTS=
 # ถ้าต้องการให้รันใน dev mode ก็เปลี่ยนค่าตรงนี้
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=dev
 
 ENTRYPOINT ["dotnet", "Web.dll"]
