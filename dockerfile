@@ -12,7 +12,7 @@ WORKDIR /src
 
 COPY *.sln ./
 COPY Web/*.csproj Web/
-COPY Core/Domian/*.csproj Core/Domian/
+COPY Core/Domian/*.csproj Core/Domain/
 COPY Core/Application/*.csproj Core/Application/
 COPY Infrastructure/Infrastructure/*.csproj Infrastructure/Infrastructure/
 COPY Infrastructure/Persistence/*.csproj Infrastructure/Persistence/
