@@ -6,6 +6,9 @@ using Persistence;
 using Lists = Application.Features.SU.User001.Lists;
 using ListWins = Application.Features.SU.Win001.Lists;
 
+Console.WriteLine("App is running...");
+Thread.Sleep(Timeout.Infinite);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(option =>
@@ -43,6 +46,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
 }
 app.UseAuthentication();
 app.MapControllers();
