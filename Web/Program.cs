@@ -6,7 +6,7 @@ using Persistence;
 using Lists = Application.Features.SU.User001.Lists;
 using ListWins = Application.Features.SU.Win001.Lists;
 
-Console.WriteLine("🚀 Starting .NET application setup...");;
+Console.WriteLine("🚀 Starting .NET application setup...");
 
 var builder = WebApplication.CreateBuilder(args);
 Console.WriteLine("App is AllowAngularClient");
@@ -16,8 +16,8 @@ builder.Services.AddCors(option =>
     option.AddPolicy("AllowAngularClient", policy =>
     {
         policy.WithOrigins("http://localhost:4200")
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
@@ -39,12 +39,11 @@ Console.WriteLine($"🌍 Environment: {builder.Environment.EnvironmentName}");
 
 var app = builder.Build();
 
-// ✅ Log that app has been built
 Console.WriteLine("✅ Application build completed.");
 
+// 🧱 Middleware pipeline
 app.UseCors("AllowAngularClient");
 
-// Swagger setup (only in Development)
 if (app.Environment.IsDevelopment())
 {
     Console.WriteLine("🧩 Development mode detected: Enabling Swagger UI...");
@@ -53,20 +52,23 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    // ⚠️ Disable HTTPS redirection in container (no cert)
+    // ❌ อย่า redirect https ใน container ถ้าไม่มี cert
     Console.WriteLine("⚠️ Non-development mode detected: Skipping HTTPS redirection (no cert).");
-    // ❌ อย่าใช้ app.UseHttpsRedirection(); ใน container ถ้าไม่มี cert
 }
 
+// 🔐 Authentication / Authorization
 app.UseAuthentication();
-app.MapControllers();
+app.UseAuthorization();
 
-Console.WriteLine("App is use");
-
+// 🌐 Static files (Angular frontend)
 app.UseDefaultFiles();
-app.MapFallbackToFile("index.html");
 app.UseStaticFiles();
+
+// 🧭 Routing
+app.MapControllers();
+app.MapFallbackToFile("index.html"); // Angular routes fallback
 
 Console.WriteLine("✅ App is running and ready to accept requests...");
 
+// 🏁 Start the app — block main thread here
 app.Run();
