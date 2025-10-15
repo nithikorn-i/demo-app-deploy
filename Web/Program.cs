@@ -11,6 +11,11 @@ Console.WriteLine("🚀 Starting .NET application setup...");
 var builder = WebApplication.CreateBuilder(args);
 Console.WriteLine("App is AllowAngularClient");
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080); // ✅ บังคับใช้พอร์ต 8080
+});
+
 builder.Services.AddCors(option =>
 {
     option.AddPolicy("AllowAngularClient", policy =>

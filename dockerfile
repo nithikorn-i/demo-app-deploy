@@ -33,9 +33,6 @@ COPY --from=dotnet-build /app/publish ./
 # ✅ copy Angular build ไปไว้ใน wwwroot
 COPY --from=client-build /src/Web/web-ui/dist/web-ui ./wwwroot
 
-EXPOSE 80
-
-ENV ASPNETCORE_URLS=http://+:80
-ENV ASPNETCORE_ENVIRONMENT=dev
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "Web.dll"]
