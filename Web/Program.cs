@@ -7,9 +7,9 @@ using Lists = Application.Features.SU.User001.Lists;
 using ListWins = Application.Features.SU.Win001.Lists;
 
 Console.WriteLine("App is running...");
-Thread.Sleep(Timeout.Infinite);
 
 var builder = WebApplication.CreateBuilder(args);
+Console.WriteLine("App is AllowAngularClient");
 
 builder.Services.AddCors(option =>
 {
@@ -20,7 +20,7 @@ builder.Services.AddCors(option =>
         .AllowAnyMethod();
     });
 });
-
+Console.WriteLine("App is Set Services");
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
@@ -37,21 +37,27 @@ builder.Services.AddScoped<IWinService, WinService>();
 builder.Services.AddScoped<Lists>();
 builder.Services.AddScoped<ListWins>();
 
+Console.WriteLine("App is builder..");
+
 var app = builder.Build();
 
 app.UseCors("AllowAngularClient");
 
+Console.WriteLine("App is UseSwagger");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-} else if (!app.Environment.IsDevelopment())
+}
+else if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
 app.UseAuthentication();
 app.MapControllers();
+
+Console.WriteLine("App is use");
 
 app.UseDefaultFiles();
 app.MapFallbackToFile("index.html");
@@ -59,3 +65,6 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.Run();
+
+
+Console.WriteLine("End");
