@@ -71,6 +71,7 @@ app.UseStaticFiles();
 
 // 🧭 Routing
 app.MapControllers();
+app.MapHealthChecks("/health");
 app.MapFallbackToFile("index.html"); // Angular routes fallback
 
 app.MapGet("/", () => "App is healthy ✅");
