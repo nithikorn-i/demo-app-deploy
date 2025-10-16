@@ -1,54 +1,69 @@
+# ================================
+# Deployment: demo-app-deploy
+# ================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-app-deploy
-  namespace: dev
+  name: demo-app-deploy               # ชื่อ Deployment
+  namespace: dev                      # อยู่ใน namespace dev
 spec:
-  replicas: 3
+  replicas: 3                         # จำนวน Pod ที่ต้องการให้รันพร้อมกัน
   selector:
     matchLabels:
-      app: demo-app-deploy
+      app: demo-app-deploy            # ใช้ label นี้เพื่อจับคู่กับ Pod ที่จะ deploy
   template:
     metadata:
       labels:
-        app: demo-app-deploy
+        app: demo-app-deploy          # label ของ Pod เพื่อให้ Service และ Deployment รู้จักกัน
     spec:
       imagePullSecrets:
-        - name: ghcr-secret
+        - name: ghcr-secret           # ใช้ secret นี้ในการดึง image จาก GitHub Container Registry (GHCR)
       containers:
         - name: demo-app-deploy
-          image: ghcr.io/nithikorn-i/demo-app-deploy:latest
-          imagePullPolicy: Always
+          image: ghcr.io/nithikorn-i/demo-app-deploy:latest   # Docker image ที่จะใช้รันแอป
+          imagePullPolicy: Always      # บังคับให้ดึง image ใหม่ทุกครั้งที่ deploy
           ports:
-            - containerPort: 8080
+            - containerPort: 8080      # พอร์ตที่ container ฟังอยู่ภายใน (ตรงกับ .NET app)
           env:
-            - name: ASPNETCORE_ENVIRONMENT
-              value: "http://+:8080"
+            - name: ASPNETCORE_URLS    # ✅ ใช้ตัวแปรนี้แทน ASPNETCORE_ENVIRONMENT
+              value: "http://+:8080"   # บอก .NET ให้ฟังที่พอร์ต 8080 (ทุก IP ภายใน container)
+          
+          # -------------------------------
+          # readinessProbe: ตรวจว่าแอปพร้อมให้รับ request แล้วหรือยัง
+          # -------------------------------
           readinessProbe:
             httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 5
+              path: /                  # ตรวจที่ path `/` (ต้องตอบ 200 OK ถึงจะผ่าน)
+              port: 8080               # ใช้พอร์ตเดียวกับ container
+            initialDelaySeconds: 10    # รอ 10 วิ ก่อนเริ่มตรวจครั้งแรก
+            periodSeconds: 5           # ตรวจซ้ำทุก 5 วิ
+
+          # -------------------------------
+          # livenessProbe: ตรวจว่าแอปยังทำงานอยู่หรือไม่
+          # ถ้า fail -> Kubernetes จะ restart container ทันที
+          # -------------------------------
           livenessProbe:
             httpGet:
-              path: /health
+              path: /health            # ตรวจที่ path `/health` (ควรมี health endpoint ใน .NET)
               port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            initialDelaySeconds: 10    # รอ 10 วิ ก่อนเริ่มตรวจครั้งแรก
+            periodSeconds: 10          # ตรวจซ้ำทุก 10 วิ
 
 ---
+# ================================
+# Service: demo-app-svc
+# ================================
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo-app-svc
-  namespace: dev
+  name: demo-app-svc                  # ชื่อ Service
+  namespace: dev                      # อยู่ใน namespace dev
 spec:
   selector:
-    app: demo-app-deploy
+    app: demo-app-deploy              # ชี้ไปยัง Pod ที่มี label app=demo-app-deploy
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: 30080
-  type: LoadBalancer
+    - protocol: TCP                   # ใช้โปรโตคอล TCP
+      port: 8080                      # พอร์ตของ Service ภายใน Cluster
+      targetPort: 8080                # พอร์ตภายใน container
+      nodePort: 30080                 # พอร์ตภายนอก (เข้าผ่าน Node IP:30080)
+  type: LoadBalancer                  # ประเภท Service (ใช้ LoadBalancer สำหรับ external access)
