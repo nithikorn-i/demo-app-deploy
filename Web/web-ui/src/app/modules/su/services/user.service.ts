@@ -12,7 +12,8 @@ export class UserService {
   private currentPort = window.location.port;
 
   // private api = 'http://localhost:5062/api/Win001';
-  private api = `http://localhost:${this.currentPort}/api/Win001`
+  // private api = `http://localhost:${this.currentPort}/api/Win001`
+  private api = `http://172.16.0.138:8000/api/Win001`
 
   constructor(private http: HttpClient) { }
 

@@ -13,14 +13,14 @@ Console.WriteLine("App is AllowAngularClient");
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(8080); // ✅ บังคับใช้พอร์ต 8080
+    options.ListenAnyIP(8000); // ✅ บังคับใช้พอร์ต 8000
 });
 
 builder.Services.AddCors(option =>
 {
     option.AddPolicy("AllowAngularClient", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://172.16.0.138:30080")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

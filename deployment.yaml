@@ -23,10 +23,10 @@ spec:
           image: ghcr.io/nithikorn-i/demo-app-deploy:latest   # Docker image ที่จะใช้รันแอป
           imagePullPolicy: Always      # บังคับให้ดึง image ใหม่ทุกครั้งที่ deploy
           ports:
-            - containerPort: 8080      # พอร์ตที่ container ฟังอยู่ภายใน (ตรงกับ .NET app)
+            - containerPort: 8000      # พอร์ตที่ container ฟังอยู่ภายใน (ตรงกับ .NET app)
           env:
             - name: ASPNETCORE_URLS    # ✅ ใช้ตัวแปรนี้แทน ASPNETCORE_ENVIRONMENT
-              value: "http://+:8080"   # บอก .NET ให้ฟังที่พอร์ต 8080 (ทุก IP ภายใน container)
+              value: "http://+:8000"   # บอก .NET ให้ฟังที่พอร์ต 8000 (ทุก IP ภายใน container)
           
           # -------------------------------
           # readinessProbe: ตรวจว่าแอปพร้อมให้รับ request แล้วหรือยัง
@@ -34,7 +34,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /                  # ตรวจที่ path `/` (ต้องตอบ 200 OK ถึงจะผ่าน)
-              port: 8080               # ใช้พอร์ตเดียวกับ container
+              port: 8000               # ใช้พอร์ตเดียวกับ container
             initialDelaySeconds: 10    # รอ 10 วิ ก่อนเริ่มตรวจครั้งแรก
             periodSeconds: 5           # ตรวจซ้ำทุก 5 วิ
 
@@ -45,7 +45,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /health            # ตรวจที่ path `/health` (ควรมี health endpoint ใน .NET)
-              port: 8080
+              port: 8000
             initialDelaySeconds: 10    # รอ 10 วิ ก่อนเริ่มตรวจครั้งแรก
             periodSeconds: 10          # ตรวจซ้ำทุก 10 วิ
 
@@ -63,7 +63,7 @@ spec:
     app: demo-app-deploy              # ชี้ไปยัง Pod ที่มี label app=demo-app-deploy
   ports:
     - protocol: TCP                   # ใช้โปรโตคอล TCP
-      port: 8080                      # พอร์ตของ Service ภายใน Cluster
-      targetPort: 8080                # พอร์ตภายใน container
+      port: 8000                      # พอร์ตของ Service ภายใน Cluster
+      targetPort: 8000                # พอร์ตภายใน container
       nodePort: 30080                 # พอร์ตภายนอก (เข้าผ่าน Node IP:30080)
   type: LoadBalancer                  # ประเภท Service (ใช้ LoadBalancer สำหรับ external access)
