@@ -20,7 +20,7 @@ builder.Services.AddCors(option =>
 {
     option.AddPolicy("AllowAngularClient", policy =>
     {
-        policy.WithOrigins("http://172.16.0.138:30080")
+        policy.WithOrigins("http://172.16.0.138:30080","http://web-ui-svc.dev.svc.cluster.local")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
