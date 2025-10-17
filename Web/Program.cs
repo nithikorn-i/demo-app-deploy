@@ -25,7 +25,9 @@ builder.Services.AddCors(option =>
               .AllowAnyMethod();
     });
 });
+// เพิ่ม HealthChecks service
 
+builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -61,6 +63,9 @@ else
     Console.WriteLine("⚠️ Non-development mode detected: Skipping HTTPS redirection (no cert).");
 }
 
+// เพิ่ม health check endpoint
+app.MapHealthChecks("/health");
+
 // 🔐 Authentication / Authorization
 app.UseAuthentication();
 app.UseAuthorization();
@@ -71,7 +76,6 @@ app.UseStaticFiles();
 
 // 🧭 Routing
 app.MapControllers();
-app.MapHealthChecks("/health");
 app.MapFallbackToFile("index.html"); // Angular routes fallback
 
 app.MapGet("/", () => "App is healthy ✅");
