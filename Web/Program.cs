@@ -78,8 +78,6 @@ app.UseStaticFiles();
 app.MapControllers();
 app.MapFallbackToFile("index.html"); // Angular routes fallback
 
-app.MapGet("/", () => "App is healthy ✅");
-
 Console.WriteLine("✅ App is running and ready to accept requests...");
 
 // 🏁 Start the app — block main thread here
