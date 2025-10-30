@@ -13,7 +13,7 @@ export class UserService {
 
   // private api = 'http://localhost:5062/api/Win001';
   // private api = `http://localhost:${this.currentPort}/api/Win001`
-  private api = `/api/Win001`
+  private api = `/app/api/Win001`
 
   constructor(private http: HttpClient) { }
 
